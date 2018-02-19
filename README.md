@@ -13,8 +13,5 @@
 * [CoreMLHelpers](https://github.com/hollance/CoreMLHelpers)
 * [IteratorTools](https://github.com/mpangburn/IteratorTools)
 
-## ToDo
-* Detailed explanation
-
 ## License
 Licensed under the terms of the [MIT license](LICENSE.txt).
