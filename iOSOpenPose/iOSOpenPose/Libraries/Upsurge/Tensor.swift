@@ -45,6 +45,10 @@ open class Tensor<Element: Value>: MutableTensorType, Equatable {
 
     open var span: Span
 
+    open var count: Int {
+        return span.count
+    }
+
     public init<M: LinearType>(dimensions: [Int], elements: M) where M.Element == Element {
         assert(dimensions.reduce(1, *) == elements.count)
         self.span = Span(zeroTo: dimensions)

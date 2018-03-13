@@ -25,8 +25,10 @@ import Accelerate
 public func +=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Double, MR.Element == Double {
     assert(lhs.count >= rhs.count)
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vaddD(lhsp + lhs.startIndex, lhs.step, rhsp + rhs.startIndex, rhs.step, lhsp, lhs.step, vDSP_Length(count))
+        vDSP_vaddD(lhsp + lhsStart, lhsStep, rhsp + rhs.startIndex, rhs.step, lhsp, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -40,9 +42,12 @@ public func +<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Do
 }
 
 public func +=<ML: MutableLinearType>(lhs: inout ML, rhs: Double) where ML.Element == Double {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar = rhs
-        vDSP_vsaddD(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsaddD(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -61,8 +66,10 @@ public func +<MR: LinearType>(lhs: Double, rhs: MR) -> ValueArray<Double> where 
 
 public func -=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Double, MR.Element == Double {
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-    vDSP_vsubD(rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(count))
+    vDSP_vsubD(rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -77,8 +84,11 @@ public func -<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Do
 
 public func -=<ML: MutableLinearType>(lhs: inout ML, rhs: Double) where ML.Element == Double {
     var scalar: Double = -rhs
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
-        vDSP_vsaddD(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsaddD(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -103,8 +113,10 @@ public func -<ML: LinearType>(lhs: Double, rhs: ML) -> ValueArray<Double> where 
 
 public func /=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Double, MR.Element == Double {
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vdivD(rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(count))
+        vDSP_vdivD(rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -118,9 +130,12 @@ public func /<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Do
 }
 
 public func /=<ML: MutableLinearType>(lhs: inout ML, rhs: Double) where ML.Element == Double {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar = rhs
-        vDSP_vsdivD(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsdivD(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -143,8 +158,11 @@ public func /<ML: LinearType>(lhs: Double, rhs: ML) -> ValueArray<Double> where 
 }
 
 public func *=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Double, MR.Element == Double {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vmulD(lhsp + lhs.startIndex, lhs.step, rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vmulD(lhsp + lhsStart, lhsStep, rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -158,8 +176,11 @@ public func *<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Do
 
 public func *=<ML: MutableLinearType>(lhs: inout ML, rhs: Double) where ML.Element == Double {
     var rhs = rhs
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
-        vDSP_vsmulD(lhsp + lhs.startIndex, lhs.step, &rhs, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsmulD(lhsp + lhsStart, lhsStep, &rhs, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -194,8 +215,10 @@ public func •<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> Double wher
 public func +=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Float, MR.Element == Float {
     assert(lhs.count >= rhs.count)
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vadd(lhsp + lhs.startIndex, lhs.step, rhsp + rhs.startIndex, rhs.step, lhsp, lhs.step, vDSP_Length(count))
+        vDSP_vadd(lhsp + lhsStart, lhsStep, rhsp + rhs.startIndex, rhs.step, lhsp, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -209,9 +232,12 @@ public func +<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Fl
 }
 
 public func +=<ML: MutableLinearType>(lhs: inout ML, rhs: Float) where ML.Element == Float {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar = rhs
-        vDSP_vsadd(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsadd(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -230,8 +256,10 @@ public func +<MR: LinearType>(lhs: Float, rhs: MR) -> ValueArray<Float> where MR
 
 public func -=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Float, MR.Element == Float {
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vsub(rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(count))
+        vDSP_vsub(rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -245,9 +273,12 @@ public func -<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Fl
 }
 
 public func -=<ML: MutableLinearType>(lhs: inout ML, rhs: Float) where ML.Element == Float {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar: Float = -rhs
-        vDSP_vsadd(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsadd(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -272,8 +303,10 @@ public func -<ML: LinearType>(lhs: Float, rhs: ML) -> ValueArray<Float> where ML
 
 public func /=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Float, MR.Element == Float {
     let count = min(lhs.count, rhs.count)
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vdiv(rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(count))
+        vDSP_vdiv(rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -287,9 +320,12 @@ public func /<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Fl
 }
 
 public func /=<ML: MutableLinearType>(lhs: inout ML, rhs: Float) where ML.Element == Float {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar = rhs
-        vDSP_vsdiv(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsdiv(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 
@@ -312,8 +348,11 @@ public func /<ML: LinearType>(lhs: Float, rhs: ML) -> ValueArray<Float> where ML
 }
 
 public func *=<ML: MutableLinearType, MR: LinearType>(lhs: inout ML, rhs: MR) where ML.Element == Float, MR.Element == Float {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointers(rhs, &lhs) { rhsp, lhsp in
-        vDSP_vmul(lhsp + lhs.startIndex, lhs.step, rhsp + rhs.startIndex, rhs.step, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vmul(lhsp + lhsStart, lhsStep, rhsp + rhs.startIndex, rhs.step, lhsp + lhsStart, lhsStep, vDSP_Length(count))
         }
 }
 
@@ -326,9 +365,12 @@ public func *<ML: LinearType, MR: LinearType>(lhs: ML, rhs: MR) -> ValueArray<Fl
 }
 
 public func *=<ML: MutableLinearType>(lhs: inout ML, rhs: Float) where ML.Element == Float {
+    let count = lhs.count
+    let lhsStart = lhs.startIndex
+    let lhsStep = lhs.step
     withPointer(&lhs) { lhsp in
         var scalar = rhs
-        vDSP_vsmul(lhsp + lhs.startIndex, lhs.step, &scalar, lhsp + lhs.startIndex, lhs.step, vDSP_Length(lhs.count))
+        vDSP_vsmul(lhsp + lhsStart, lhsStep, &scalar, lhsp + lhsStart, lhsStep, vDSP_Length(count))
     }
 }
 

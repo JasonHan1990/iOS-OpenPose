@@ -26,6 +26,10 @@ open class TensorSlice<Element: Value>: MutableTensorType, Equatable {
 
     open let span: Span
 
+    open var count: Int {
+        return span.count
+    }
+
     open func withUnsafeBufferPointer<R>(_ body: (UnsafeBufferPointer<Element>) throws -> R) rethrows -> R {
         return try base.withUnsafeBufferPointer(body)
     }

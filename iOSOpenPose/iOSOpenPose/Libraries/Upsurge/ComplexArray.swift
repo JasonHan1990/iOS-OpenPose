@@ -118,6 +118,11 @@ open class ComplexArray<T: Real>: MutableLinearType, ExpressibleByArrayLiteral, 
         elements = ValueArray(values)
     }
 
+    /// Construct a ComplexArray from a sequence
+    public required init<S: Sequence>(_ elements: S) where ComplexArray.Element == S.Element {
+        self.elements = ValueArray(elements)
+    }
+
     /// Construct a ComplexArray of `count` elements, each initialized to `repeatedValue`.
     public required init(count: Int, repeatedValue: Element) {
         elements = ValueArray(count: count, repeatedValue: repeatedValue)

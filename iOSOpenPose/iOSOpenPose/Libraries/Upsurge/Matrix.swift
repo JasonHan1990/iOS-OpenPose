@@ -157,7 +157,7 @@ open class Matrix<Element: Value>: MutableQuadraticType, Equatable, CustomString
         }
     }
 
-    open subscript(intervals: IntervalType...) -> Slice {
+    public subscript(intervals: IntervalType...) -> Slice {
         get {
             return self[intervals]
         }
@@ -166,13 +166,33 @@ open class Matrix<Element: Value>: MutableQuadraticType, Equatable, CustomString
         }
     }
 
-    open subscript(intervals: [IntervalType]) -> Slice {
+    public subscript(intervals: [IntervalType]) -> Slice {
         get {
             let span = Span(dimensions: dimensions, intervals: intervals)
             return self[span]
         }
         set {
             let span = Span(dimensions: dimensions, intervals: intervals)
+            self[span] = newValue
+        }
+    }
+
+    public subscript(ranges: CountableRange<Int>...) -> Slice {
+        get {
+            return self[ranges]
+        }
+        set {
+            self[ranges] = newValue
+        }
+    }
+
+    public subscript(ranges: [CountableRange<Int>]) -> Slice {
+        get {
+            let span = Span(dimensions: dimensions, intervals: ranges)
+            return self[span]
+        }
+        set {
+            let span = Span(dimensions: dimensions, intervals: ranges)
             self[span] = newValue
         }
     }

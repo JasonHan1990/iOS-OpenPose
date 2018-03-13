@@ -104,6 +104,17 @@ open class ValueArray<Element: Value>: MutableLinearType, ExpressibleByArrayLite
         }
     }
 
+    /// Construct a ValueArray from a sequence
+    public required init<S: Sequence>(_ values: S) where ValueArray.Element == S.Element {
+        let array = Array(values)
+        mutablePointer = UnsafeMutablePointer.allocate(capacity: array.count)
+        capacity = array.count
+        count = array.count
+        for (i, value) in zip(array.indices, array) {
+            mutablePointer[i] = value
+        }
+    }
+
     /// Construct a ValueArray of `count` elements, each initialized to `repeatedValue`.
     public required convenience init(count: IndexDistance, repeatedValue: Element) {
         self.init(count: count) { repeatedValue }
@@ -120,7 +131,7 @@ open class ValueArray<Element: Value>: MutableLinearType, ExpressibleByArrayLite
     }
 
     deinit {
-        mutablePointer.deallocate(capacity: capacity)
+        mutablePointer.deallocate()
     }
 
     public func assign<C: LinearType>(_ elements: C) where C.Element == Element {

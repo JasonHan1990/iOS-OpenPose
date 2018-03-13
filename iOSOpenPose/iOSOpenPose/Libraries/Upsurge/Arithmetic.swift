@@ -136,8 +136,9 @@ public func sqrt<M: LinearType>(_ x: M) -> ValueArray<Double> where M.Element ==
 public func sqrt<MI: LinearType, MO: MutableLinearType>(_ x: MI, results: inout MO) where MI.Element == Double, MO.Element == Double {
     precondition(x.step == 1, "sqrt doesn't support step values other than 1")
     precondition(results.count == x.count, "The number of elements in x and y should match")
+    let startIndex = results.startIndex
     withPointers(x, &results) { xp, rp in
-        vvsqrt(rp + results.startIndex, xp + x.startIndex, [Int32(x.count)])
+        vvsqrt(rp + startIndex, xp + x.startIndex, [Int32(x.count)])
     }
 }
 
@@ -267,8 +268,9 @@ public func sqrt<M: LinearType>(_ x: M) -> ValueArray<Float> where M.Element == 
 public func sqrt<MI: LinearType, MO: MutableLinearType>(_ x: MI, y: inout MO) where MI.Element == Float, MO.Element == Float {
     precondition(x.step == 1, "sqrt doesn't support step values other than 1")
     precondition(y.count == x.count, "The number of elements in x and y should match")
+    let startIndex = y.startIndex
     withPointers(x, &y) { xp, yp in
-        vvsqrtf(yp + y.startIndex, xp + x.startIndex, [Int32(x.count)])
+        vvsqrtf(yp + startIndex, xp + x.startIndex, [Int32(x.count)])
     }
 }
 

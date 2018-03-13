@@ -39,8 +39,9 @@ public func gemm<
     let atrans = a.arrangement == c.arrangement ? CblasNoTrans : CblasTrans
     let btrans = b.arrangement == c.arrangement ? CblasNoTrans : CblasTrans
 
+    let cStride = Int32(c.stride)
     withPointers(a, b, &c) { pa, pb, pc in
-        cblas_dgemm(order, atrans, btrans, Int32(a.rows), Int32(b.columns), Int32(a.columns), α, pa, Int32(a.stride), pb, Int32(b.stride), β, pc, Int32(c.stride))
+        cblas_dgemm(order, atrans, btrans, Int32(a.rows), Int32(b.columns), Int32(a.columns), α, pa, Int32(a.stride), pb, Int32(b.stride), β, pc, cStride)
     }
 }
 
@@ -90,9 +91,12 @@ public func normalize<M: QuadraticType>(_ x: M) -> Matrix<Double> where M.Elemen
 }
 
 public func transpose<M: QuadraticType>(_ x: M) -> Matrix<Double> where M.Element == Double {
-    var results = Matrix<Double>(rows: x.columns, columns: x.rows, repeatedValue: 0.0)
+    let rows = x.columns
+    let columns = x.rows
+    var results = Matrix<Double>(rows: rows, columns: columns, repeatedValue: 0.0)
+    let step = results.step
     withPointers(x, &results) { xp, rp in
-        vDSP_mtransD(xp, x.step, rp, results.step, vDSP_Length(results.rows), vDSP_Length(results.columns))
+        vDSP_mtransD(xp, x.step, rp, step, vDSP_Length(rows), vDSP_Length(columns))
     }
     return results
 }
@@ -182,8 +186,9 @@ public func gemm<
         let order = c.arrangement == .rowMajor ? CblasRowMajor : CblasColMajor
         let atrans = a.arrangement == c.arrangement ? CblasNoTrans : CblasTrans
         let btrans = b.arrangement == c.arrangement ? CblasNoTrans : CblasTrans
+        let cStride = Int32(c.stride)
         withPointers(a, b, &c) { pa, pb, pc in
-            cblas_sgemm(order, atrans, btrans, Int32(a.rows), Int32(b.columns), Int32(a.columns), α, pa, Int32(a.stride), pb, Int32(b.stride), β, pc, Int32(c.stride))
+            cblas_sgemm(order, atrans, btrans, Int32(a.rows), Int32(b.columns), Int32(a.columns), α, pa, Int32(a.stride), pb, Int32(b.stride), β, pc, cStride)
         }
 }
 
@@ -235,8 +240,9 @@ public func normalize<M: QuadraticType>(_ x: M) -> Matrix<Float> where M.Element
 
 public func transpose<M: QuadraticType>(_ x: M) -> Matrix<Float> where M.Element == Float {
     var results = Matrix<Float>(rows: x.columns, columns: x.rows, repeatedValue: 0.0)
+    let step = results.step
     withPointers(x, &results) { xp, rp in
-        vDSP_mtrans(xp, x.step, rp, results.step, vDSP_Length(results.rows), vDSP_Length(results.columns))
+        vDSP_mtrans(xp, x.step, rp, step, vDSP_Length(x.columns), vDSP_Length(x.rows))
     }
     return results
 }

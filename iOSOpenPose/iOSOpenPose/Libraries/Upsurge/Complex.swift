@@ -67,11 +67,11 @@ public struct Complex<Element: Real>: Value {
         return "\(real) + \(imag)i"
     }
 
-    public static func ==(lhs: Complex, rhs: Complex) -> Bool {
+    public static func == (lhs: Complex, rhs: Complex) -> Bool {
         return lhs.real == rhs.real && lhs.imag == rhs.imag
     }
 
-    public static func <(lhs: Complex, rhs: Complex) -> Bool {
+    public static func < (lhs: Complex, rhs: Complex) -> Bool {
         return lhs.real < rhs.real || (lhs.real == rhs.real && lhs.imag < rhs.imag)
     }
 
@@ -111,4 +111,3 @@ public struct Complex<Element: Real>: Value {
         return Complex(real: a*x.real / xMagSq, imag: -a*x.imag / xMagSq)
     }
 }
-

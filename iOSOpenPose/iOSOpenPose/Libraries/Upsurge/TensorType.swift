@@ -24,6 +24,7 @@ public protocol TensorType {
 
     /// A description of the dimensions over which the TensorType spans
     var span: Span { get }
+    var count: Int { get }
 
     subscript(intervals: [IntervalType]) -> Slice { get }
     subscript(intervals: [Int]) -> Element { get }
@@ -39,11 +40,6 @@ public extension TensorType {
     /// The size of each dimension
     public var dimensions: [Int] {
         return span.dimensions
-    }
-
-    /// The number of valid element in the memory block, taking into account the step size.
-    public var count: Int {
-        return span.count
     }
 
     /// The number of dimensions
@@ -85,6 +81,7 @@ public extension MutableTensorType {
     ///
     /// - precondition: The available space on `self` is greater than or equal to the number of elements on `lhs`
     mutating func assignFrom<T: TensorType>(_ rhs: T) where T.Element == Element {
+        let count = self.count
         precondition(rhs.count <= count)
         withPointers(&self, rhs) { lhsp, rhsp in
             lhsp.assign(from: UnsafeMutablePointer(mutating: rhsp), count: count)
