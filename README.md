@@ -5,9 +5,6 @@
 * iOS 11.0+
 * Swift 4
 
-## Frameworks
-* You need to download & install final [OpenCV](https://opencv.org/releases.html) framework for iOS to use this project
-
 ## Libraries included
 * [UpSurge](https://github.com/aleph7/Upsurge)
 * [CoreMLHelpers](https://github.com/hollance/CoreMLHelpers)
